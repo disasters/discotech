@@ -1,0 +1,15 @@
+[package]
+name = "discotech"
+description = "The best way to meet your service"
+version = "0.0.1"
+authors = [
+  "Tyler Neely <t@jujit.su>",
+  "Steve Salevan <steve.salevan@gmail.com>"
+]
+license = "Apache-2.0"
+
+[dependencies.zookeeper]
+git = "0.1.0"
+
+[dependencies]
+mio = "0.3.0"
