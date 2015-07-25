@@ -7,11 +7,12 @@ use std::fs::File;
 use rustc_serialize::json;
 
 
-#[derive(RustcDecodable, RustcEncodable)]
+#[derive(Debug, RustcDecodable, RustcEncodable)]
 pub struct DiscoConfig {
-  zookeeper_host: String,
-  zookeeper_port: u16,
-  serverset: String,
+  pub zookeeper_host: String,
+  pub zookeeper_port: u16,
+  pub zookeeper_timeout_secs: u64,
+  pub serverset_znode: String,
 }
 
 

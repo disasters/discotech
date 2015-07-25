@@ -12,5 +12,7 @@ license = "Apache-2.0"
 git = "https://github.com/bonifaido/rust-zookeeper.git"
 
 [dependencies]
+log = "0.3"
+log4rs = "0.3"
 mio = "0.3.0"
 rustc-serialize = "0.3"
