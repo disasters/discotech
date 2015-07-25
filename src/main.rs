@@ -3,6 +3,7 @@ extern crate log;
 extern crate log4rs;
 
 use discotech::config::*;
+use discotech::serverset::*;
 
 use std::env;
 
@@ -18,6 +19,7 @@ fn initialize_logging() {
 fn initialize(config: DiscoConfig) {
   println!("Config: {:?}", config);
   initialize_logging();
+  Serverset::new(config);
 }
 
 fn main() {
