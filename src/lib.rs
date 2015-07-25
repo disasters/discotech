@@ -4,8 +4,4 @@
 #![feature(btree_range)]
 #![feature(collections_bound)]
 
-pub use store::Store;
-
-pub mod store;
-
 extern crate zookeeper;

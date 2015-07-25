@@ -9,7 +9,7 @@ authors = [
 license = "Apache-2.0"
 
 [dependencies.zookeeper]
-git = "0.1.0"
+git = "https://github.com/bonifaido/rust-zookeeper.git"
 
 [dependencies]
 mio = "0.3.0"
