@@ -1,0 +1,5 @@
+{
+  "zookeeper_host": "localhost",
+  "zookeeper_port": 2181,
+  "serverset": "/disco/tech"
+}

@@ -13,3 +13,4 @@ git = "https://github.com/bonifaido/rust-zookeeper.git"
 
 [dependencies]
 mio = "0.3.0"
+rustc-serialize = "0.3"

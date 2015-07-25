@@ -4,4 +4,5 @@
 #![feature(btree_range)]
 #![feature(collections_bound)]
 
+extern crate rustc_serialize;
 extern crate zookeeper;
