@@ -1,30 +1,11 @@
-extern crate rustc_serialize;
+extern crate discotech;
 
-use rustc_serialize::json;
+use discotech::config::*;
+
 use std::env;
 
-use std::io::prelude::*;
-use std::io;
-use std::fs::File;
 
-
-#[derive(RustcDecodable, RustcEncodable)]
-pub struct Config {
-  zookeeper_host: String,
-  zookeeper_port: u16,
-  serverset: String,
-}
-
-
-fn read_config(config_file_loc: String) -> io::Result<Config> {
-  let mut config_file = try!(File::open(config_file_loc));
-  let mut config_file_contents = String::new();
-  try!(config_file.read_to_string(&mut config_file_contents));
-  let config: Config = json::decode(&config_file_contents).unwrap();
-  Ok(config)
-}
-
-fn initialize(config: Config) {
+fn initialize(config: DiscoConfig) {
   println!("Config read");
 }
 

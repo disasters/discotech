@@ -6,3 +6,9 @@
 
 extern crate rustc_serialize;
 extern crate zookeeper;
+
+pub use config::*;
+pub use serverset::*;
+
+pub mod config;
+pub mod serverset;
