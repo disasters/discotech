@@ -1,0 +1,6 @@
+{
+  "zookeeper_host": "localhost",
+  "zookeeper_port": 2181,
+  "zookeeper_timeout_secs": 5,
+  "serverset_znode": "/disco/tech"
+}
