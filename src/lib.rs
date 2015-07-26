@@ -20,30 +20,11 @@ pub unsafe fn dlsym_next(symbol: &'static str) -> *const u8 {
     ptr as *const u8
 }
 
-static mut real_connect : Option<fn(c_int, *const sockaddr, socklen_t) -> c_int> = None;
 #[no_mangle]
 pub unsafe extern "C" fn connect(socket: c_int, address: *const sockaddr,
                            len: socklen_t) -> c_int {
     println!("HOOKING CONNECT!!!!!!!!!!!!!!!!!");
-    let f = match real_connect {
-        Some(f) => f,
-        None => {
-            let ptr = dlsym_next("connect");
-            let f: &mut fn(c_int, *const sockaddr, socklen_t) -> c_int = mem::transmute(ptr);
-            real_connect = Some(*f);
-            *f
-        }
-    };
+    let ptr = dlsym_next("connect");
+    let f: fn(c_int, *const sockaddr, socklen_t) -> c_int = mem::transmute(ptr);
     f(socket, address, len)
-}
-
-#[no_mangle]
-pub extern "C" fn _init() {
-    println!("in _init!!!!");
-}
-
-#[test]
-fn lookup() {
-    println!("lookup: {:?}", unsafe { dlsym_next("puts") });
-    unsafe { connect(0, 0 as *const sockaddr, 4 as socklen_t); }
 }
