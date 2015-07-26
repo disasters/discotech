@@ -3,7 +3,7 @@
 #![feature(libc)]
 extern crate libc;
 
-use libc::types::os::common::bsd44::{socklen_t, sockaddr};
+use libc::types::os::common::bsd44::{addrinfo, socklen_t, sockaddr};
 use libc::{c_char, c_int, c_void};
 use std::mem;
 
@@ -27,4 +27,14 @@ pub unsafe extern "C" fn connect(socket: c_int, address: *const sockaddr,
     let ptr = dlsym_next("connect");
     let f: fn(c_int, *const sockaddr, socklen_t) -> c_int = mem::transmute(ptr);
     f(socket, address, len)
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn getaddrinfo(node: *const c_char, service: *const c_char,
+               hints: *const addrinfo, res: *const *const addrinfo) -> c_int {
+    println!("HOOKING getaddrinfo!!!!!!!!!!!!!!!!!");
+    let ptr = dlsym_next("getaddrinfo");
+    let f: fn(*const c_char, *const c_char, *const addrinfo,
+              *const *const addrinfo) -> c_int = mem::transmute(ptr);
+    f(node, service, hints, res)
 }
