@@ -2,8 +2,7 @@ extern crate discotech;
 extern crate log;
 extern crate log4rs;
 
-use discotech::config::*;
-use discotech::serverset::*;
+use discotech::{Serverset, DiscoConfig, read_config};
 
 use std::env;
 

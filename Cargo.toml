@@ -8,10 +8,6 @@ authors = [
 ]
 license = "Apache-2.0"
 
-[lib]
-name = "discotech"
-crate_type = ["dylib"]
-
 [[test]]
 name = "test"
 path = "test/mod.rs"
