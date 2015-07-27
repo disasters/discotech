@@ -12,6 +12,10 @@ license = "Apache-2.0"
 name = "discotech"
 crate_type = ["dylib"]
 
+[[test]]
+name = "test"
+path = "test/mod.rs"
+
 [dependencies.zookeeper]
 git = "https://github.com/bonifaido/rust-zookeeper.git"
 

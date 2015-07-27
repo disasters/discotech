@@ -21,7 +21,8 @@ fn initialize(config: DiscoConfig) {
   Serverset::new(config);
 }
 
-fn main() {
+#[test]
+fn integration() {
   let config_file_loc = match env::var("DISCO_CONF") {
     Err(_) => panic!("Please set the DISCO_CONF environment variable"),
     Ok(location) => location,
