@@ -17,7 +17,6 @@ fn initialize_logging() {
 }
 
 fn initialize(config: DiscoConfig) {
-  println!("Config: {:?}", config);
   initialize_logging();
   Serverset::new(config);
 }
