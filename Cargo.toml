@@ -16,10 +16,8 @@ license = "Apache-2.0"
 name = "test"
 path = "test/mod.rs"
 
-[dependencies.zookeeper]
-git = "https://github.com/bonifaido/rust-zookeeper.git"
-
 [dependencies]
+discotech_zookeeper = "0.1.0"
 log = "0.3"
 log4rs = "0.3"
 mio = "0.3.0"

@@ -1,5 +1,5 @@
 extern crate log;
-extern crate zookeeper;
+extern crate discotech_zookeeper;
 
 use config::*;
 
@@ -8,8 +8,8 @@ use std::sync::RwLock;
 use std::time::Duration;
 use std::collections::HashMap;
 use std::collections::HashSet;
-use zookeeper::{Acl, CreateMode, Watcher, WatchedEvent, ZkError, ZooKeeper};
-use zookeeper::perms;
+use discotech_zookeeper::{Acl, CreateMode, Watcher, WatchedEvent, ZkError, ZooKeeper};
+use discotech_zookeeper::perms;
 
 
 #[derive(Debug, RustcDecodable, RustcEncodable)]
