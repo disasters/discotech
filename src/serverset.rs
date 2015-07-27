@@ -37,7 +37,7 @@ impl Watcher for NullWatcher {
 pub struct Serverset {
   config: DiscoConfig,
   zk_client: ZooKeeper,
-  members: RwLock<HashMap<String, ServersetMember>>,
+  pub members: RwLock<HashMap<String, ServersetMember>>,
 }
 impl Serverset {
   pub fn new(discoConfig: DiscoConfig) -> Serverset {
@@ -52,9 +52,11 @@ impl Serverset {
       },
     }
   }
+
   fn remove_member(&self, member_znode: &String) {
     self.members.write().unwrap().remove(member_znode);
   }
+
   fn update_member(&self, member_znode: &String) {
     debug!("Adding Serverset member: {}", member_znode);
     let member_json_opt = match self.zk_client.get_data(member_znode.as_str(), false) {
@@ -71,14 +73,22 @@ impl Serverset {
         Ok(node_string) => Some(node_string),
       },
     };
-    let member: Option<ServersetMember> = match member_json_opt {
+    let member_opt: Option<ServersetMember> = match member_json_opt {
       None => None,
       Some(member_json) => match json::decode(&member_json) {
         Err(reason) => None,
         Ok(member) => Some(member),
       },
     };
+    /*match member_opt {
+      None => None,
+      Some(member) => match member.status.as_ref() {
+        "ALIVE" => None, //self.members.write().unwrap().insert(member_znode, member),
+        _ => None,
+      },
+    };*/
   }
+
   pub fn update_members(&self) {
     debug!("Updating Serverset members...");
     match self.zk_client.get_children(self.config.serverset_znode.as_str(), false) {
@@ -101,12 +111,3 @@ impl Serverset {
     }
   }
 }
-
-
-const STATUS_DEAD: &'static str = "DEAD";
-const STATUS_STARTING: &'static str = "STARTING";
-const STATUS_ALIVE: &'static str = "ALIVE";
-const STATUS_STOPPING: &'static str = "STOPPING";
-const STATUS_STOPPED: &'static str = "STOPPED";
-const STATUS_WARNING: &'static str = "WARNING";
-const STATUS_UNKNOWN: &'static str = "UNKNOWN";

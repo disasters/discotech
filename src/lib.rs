@@ -17,6 +17,12 @@ use libc::types::os::common::bsd44::{addrinfo, socklen_t, sockaddr};
 use libc::{c_char, c_int, c_void};
 use std::mem;
 
+pub use config::*;
+pub use serverset::*;
+
+pub mod config;
+pub mod serverset;
+
 #[link(name="dl")]
 extern {
     fn dlsym(handle: *const c_void, symbol: *const c_char) -> *const c_void;

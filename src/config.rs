@@ -11,6 +11,7 @@ use rustc_serialize::json;
 pub struct DiscoConfig {
   pub zookeeper_host: String,
   pub zookeeper_port: u16,
+  pub zookeeper_poll_secs: u64,
   pub zookeeper_timeout_secs: u64,
   pub serverset_znode: String,
 }
