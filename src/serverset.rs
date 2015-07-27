@@ -5,6 +5,7 @@ use config::*;
 
 use rustc_serialize::json;
 use std::sync::RwLock;
+use std::thread;
 use std::time::Duration;
 use std::collections::HashMap;
 use std::collections::HashSet;
@@ -52,22 +53,30 @@ impl Serverset {
     }
   }
 
+  pub fn watch(&self) {
+    let zk_client = self.zk_client.clone();
+    thread::spawn(move || {
+      self.update_members(zk_client);
+      thread::sleep_ms(self.config.zookeeper_poll_ms);
+    });
+  }
+
   fn remove_member(&self, member_znode: &String) {
     self.members.write().unwrap().remove(member_znode);
   }
 
-  fn znode_exists(&self, znode: &String) -> bool {
-    match self.zk_client.exists(znode, false) {
+  fn znode_exists(&self, zk_client: ZooKeeper, znode: &String) -> bool {
+    match zk_client.exists(znode, false) {
       Ok(_) => true,
       _ => false,
     }
   }
 
-  fn update_member(&self, member_znode: &String) {
+  fn update_member(&self, zk_client: ZooKeeper, member_znode: &String) {
     debug!("Adding Serverset member: {}", member_znode);
     // If the Serverset member's ZNode does not exist, does not update the member.
     let full_member_znode = format!("{}/{}", self.config.serverset_znode, member_znode);
-    if !self.znode_exists(&full_member_znode) {
+    if !self.znode_exists(zk_client, &full_member_znode) {
       return
     }
     // Reads Serverset member's ZNode data and attempts to parse it into a String.
@@ -112,15 +121,16 @@ impl Serverset {
     };
   }
 
-  pub fn update_members(&self) {
+  fn update_members(&self, zk_client: ZooKeeper) {
     // Reconciles our local representation of the Serverset with that which has been
     // stored in ZooKeeper.
     debug!("Updating Serverset members...");
-    if !self.znode_exists(&self.config.serverset_znode) {
+
+    if !self.znode_exists(zk_client, &self.config.serverset_znode) {
       error!("Could not find Serverset ZNode: {}", self.config.serverset_znode);
       return
     }
-    match self.zk_client.get_children(self.config.serverset_znode.as_str(), false) {
+    match zk_client.get_children(self.config.serverset_znode.as_str(), false) {
       Err(reason) => error!("Unable to get children for {}: {}",
           self.config.serverset_znode, reason),
       Ok(serverset_children) => {
@@ -129,7 +139,7 @@ impl Serverset {
         let mut current_member_znodes = HashSet::new();
         for current_member_znode in serverset_children.iter() {
           current_member_znodes.insert(current_member_znode);
-          self.update_member(current_member_znode);
+          self.update_member(zk_client, current_member_znode);
         }
         // Removes all members that have dropped out of the serverset.
         for old_member_znode in self.members.read().unwrap().keys() {
