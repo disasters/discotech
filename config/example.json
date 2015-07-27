@@ -3,5 +3,5 @@
   "zookeeper_poll_secs": 2,
   "zookeeper_port": 2181,
   "zookeeper_timeout_secs": 5,
-  "serverset_znode": "/disco/tech"
+  "serverset_znode": "/discovery/staging/philcollins"
 }

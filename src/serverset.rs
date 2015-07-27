@@ -60,7 +60,8 @@ impl Serverset {
     debug!("Adding Serverset member: {}", member_znode);
 
     // Reads Serverset member's ZNode data and attempts to parse it into a String.
-    let member_json_opt = match self.zk_client.get_data(member_znode.as_str(), false) {
+    let member_json_opt = match self.zk_client.get_data(format!("{}/{}",
+        self.config.serverset_znode, member_znode).as_str(), false) {
       Err(reason) => {
         error!("Could not obtain node data for {} from ZooKeeper: {}", member_znode,
             reason);

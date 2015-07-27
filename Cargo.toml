@@ -1,16 +1,12 @@
 [package]
 name = "discotech"
 description = "The best way to meet your service"
-version = "0.0.1"
+version = "0.0.3"
 authors = [
   "Tyler Neely <t@jujit.su>",
   "Steve Salevan <steve.salevan@gmail.com>"
 ]
 license = "Apache-2.0"
-
-#[lib]
-#name = "discotech"
-#crate_type = ["dylib"]
 
 [[test]]
 name = "test"
