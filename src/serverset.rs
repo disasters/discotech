@@ -1,6 +1,5 @@
-#![feature(duration)]
-extern crate zookeeper;
 extern crate log;
+extern crate zookeeper;
 
 use config::*;
 
@@ -59,6 +58,8 @@ impl Serverset {
 
   fn update_member(&self, member_znode: &String) {
     debug!("Adding Serverset member: {}", member_znode);
+
+    // Reads Serverset member's ZNode data and attempts to parse it into a String.
     let member_json_opt = match self.zk_client.get_data(member_znode.as_str(), false) {
       Err(reason) => {
         error!("Could not obtain node data for {} from ZooKeeper: {}", member_znode,
@@ -73,28 +74,41 @@ impl Serverset {
         Ok(node_string) => Some(node_string),
       },
     };
+
+    // Attempts to parse Serverset member's ZNode into a ServersetMember struct.
     let member_opt: Option<ServersetMember> = match member_json_opt {
       None => None,
       Some(member_json) => match json::decode(&member_json) {
-        Err(reason) => None,
+        Err(reason) => {
+          error!("Could not parse node JSON: {}", reason);
+          None
+        },
         Ok(member) => Some(member),
       },
     };
-    /*match member_opt {
+
+    // If all has gone well, grabs a write lock on the members HashMap and updates it with
+    // the newly-unwrapped ServersetMember.
+    match member_opt {
       None => None,
       Some(member) => match member.status.as_ref() {
-        "ALIVE" => None, //self.members.write().unwrap().insert(member_znode, member),
+        "ALIVE" => {
+          self.members.write().unwrap().insert(member_znode.clone(), member)
+        },
         _ => None,
       },
-    };*/
+    };
   }
 
   pub fn update_members(&self) {
+    // Reconciles our local representation of the Serverset with that which has been
+    // stored in ZooKeeper.
     debug!("Updating Serverset members...");
     match self.zk_client.get_children(self.config.serverset_znode.as_str(), false) {
       Err(reason) => error!("Unable to get children for {}: {}",
           self.config.serverset_znode, reason),
       Ok(serverset_children) => {
+        debug!("Children: {:?}", serverset_children);
         // Updates all serverset members in parallel, tracking those which we've seen.
         let mut current_member_znodes = HashSet::new();
         for current_member_znode in serverset_children.iter() {

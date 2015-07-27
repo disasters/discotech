@@ -1,4 +1,5 @@
 extern crate discotech;
+#[macro_use]
 extern crate log;
 extern crate log4rs;
 
@@ -17,7 +18,12 @@ fn initialize_logging() {
 
 fn initialize(config: DiscoConfig) {
   initialize_logging();
-  Serverset::new(config);
+  let serverset = *Box::new(Serverset::new(config));
+  debug!("THINGS");
+  serverset.update_members();
+  for member in serverset.members.read().unwrap().iter() {
+    debug!("Member: {:?}", member);
+  }
 }
 
 #[test]
